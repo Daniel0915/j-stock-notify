@@ -1,15 +1,17 @@
 package com.notify.service;
 
 import com.notify.entity.LargeHoldingsEntity;
-import com.notify.entity.dto.LargeHoldings.LHResponseDTO;
 import com.notify.repository.LargeHoldingsRepository;
-import com.notify.service.webclient.WebClientLargeHoldingServiceImpl;
 import com.notify.service.webclient.WebClientService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 @Service
 public class LargeHoldingsService {
@@ -32,11 +34,38 @@ public class LargeHoldingsService {
         this.largeHoldingsRepository = largeHoldingsRepository;
     }
 
+    @Scheduled(cron = "0 0 1 * * *")
     public void insertData() {
         List<LargeHoldingsEntity> largeHoldingsEntityList = (List<LargeHoldingsEntity>) webClientLargeHoldingServiceImpl.get(baseUri, path, corpCodeKey, corpCodeValue);
-        largeHoldingsRepository.saveAll(largeHoldingsEntityList);
-    }
 
+        if (!largeHoldingsEntityList.isEmpty()) {
+            final int lastIndex = largeHoldingsEntityList.size() - 1;
+
+            final long lastRceptNo = largeHoldingsEntityList.get(lastIndex).getRceptNo();
+            if (!largeHoldingsRepository.findByRceptNo(lastRceptNo).isPresent()) {
+
+                // 현재 DB 에서 가장 최근에 저장된 seq 넘버
+                final long nowLastRceptNo = largeHoldingsRepository.findAllByCorpCode(corpCodeValue).stream()
+                                            .max(Comparator.comparing(LargeHoldingsEntity::getRceptNo))
+                                            .get()
+                                            .getRceptNo();
+
+                // 역순 정렬하여, 새로운 데이터 insert
+                Collections.reverse(largeHoldingsEntityList);
+
+                List<LargeHoldingsEntity> newLargeHoldingsEntityList = new ArrayList<>();
+
+                for (LargeHoldingsEntity largeHoldingsEntity : largeHoldingsEntityList) {
+                    if (largeHoldingsEntity.getRceptNo() == nowLastRceptNo) {
+                        break;
+                    } else {
+                        newLargeHoldingsEntityList.add(largeHoldingsEntity);
+                    }
+                }
+                largeHoldingsRepository.saveAll(newLargeHoldingsEntityList);
+            }
+        }
+    }
 
 
 }
