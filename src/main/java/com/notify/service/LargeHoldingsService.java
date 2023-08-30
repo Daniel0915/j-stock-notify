@@ -46,25 +46,32 @@ public class LargeHoldingsService {
             final long lastRceptNo = largeHoldingsEntityList.get(lastIndex).getRceptNo();
             if (!largeHoldingsRepository.findByRceptNo(lastRceptNo).isPresent()) {
 
-                // 현재 DB 에서 가장 최근에 저장된 seq 넘버
-                final long nowLastRceptNo = largeHoldingsRepository.findAllByCorpCode(corpCodeValue).stream()
-                                            .max(Comparator.comparing(LargeHoldingsEntity::getRceptNo))
-                                            .get()
-                                            .getRceptNo();
+                List<LargeHoldingsEntity> nowEntity = largeHoldingsRepository.findAllByCorpCode(corpCodeValue);
 
-                // 역순 정렬하여, 새로운 데이터 insert
-                Collections.reverse(largeHoldingsEntityList);
+                if (nowEntity.isEmpty()) {
+                    // 최초 데이터 Insert
+                    largeHoldingsRepository.saveAll(largeHoldingsEntityList);
+                } else {
+                    // 현재 DB 에서 가장 최근에 저장된 seq 넘버
+                    final long nowLastRceptNo = largeHoldingsRepository.findAllByCorpCode(corpCodeValue).stream()
+                            .max(Comparator.comparing(LargeHoldingsEntity::getRceptNo))
+                            .get()
+                            .getRceptNo();
 
-                List<LargeHoldingsEntity> newLargeHoldingsEntityList = new ArrayList<>();
+                    // 역순 정렬하여, 새로운 데이터 insert
+                    Collections.reverse(largeHoldingsEntityList);
 
-                for (LargeHoldingsEntity largeHoldingsEntity : largeHoldingsEntityList) {
-                    if (largeHoldingsEntity.getRceptNo() == nowLastRceptNo) {
-                        break;
-                    } else {
-                        newLargeHoldingsEntityList.add(largeHoldingsEntity);
+                    List<LargeHoldingsEntity> newLargeHoldingsEntityList = new ArrayList<>();
+
+                    for (LargeHoldingsEntity largeHoldingsEntity : largeHoldingsEntityList) {
+                        if (largeHoldingsEntity.getRceptNo() == nowLastRceptNo) {
+                            break;
+                        } else {
+                            newLargeHoldingsEntityList.add(largeHoldingsEntity);
+                        }
                     }
+                    largeHoldingsRepository.saveAll(newLargeHoldingsEntityList);
                 }
-                largeHoldingsRepository.saveAll(newLargeHoldingsEntityList);
             }
         }
     }
