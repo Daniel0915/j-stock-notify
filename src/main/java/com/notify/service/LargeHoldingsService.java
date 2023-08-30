@@ -1,8 +1,10 @@
 package com.notify.service;
 
+import com.notify.entity.ExecOwnershipEntity;
 import com.notify.entity.LargeHoldingsEntity;
 import com.notify.repository.LargeHoldingsRepository;
 import com.notify.service.webclient.WebClientService;
+import com.notify.util.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -65,6 +67,22 @@ public class LargeHoldingsService {
                 largeHoldingsRepository.saveAll(newLargeHoldingsEntityList);
             }
         }
+    }
+
+    @Scheduled(cron = "0 0 9 * * *")
+    public List<LargeHoldingsEntity> notifyInfo() {
+        String nowDate = Date.nowTimeTo("yyyyMMdd");
+        largeHoldingsRepository.findByRegDtStartingWith("20230831");
+        /**
+         * [필요 정보]
+         * 보고자 repror
+         * 회사명 corp_name
+         * 보유주식등의 수 stkqy
+         * 보유주식등의 증감 stkqy_irds
+         * 보고사유 report_resn
+         *
+         */
+        return largeHoldingsRepository.findByRegDtStartingWith("20230831");
     }
 
 

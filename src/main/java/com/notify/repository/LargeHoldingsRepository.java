@@ -11,4 +11,6 @@ public interface LargeHoldingsRepository extends JpaRepository<LargeHoldingsEnti
     Optional<LargeHoldingsEntity> findByRceptNo(long rceptNo);
 
     List<LargeHoldingsEntity> findAllByCorpCode(String corpCode);
+
+    List<LargeHoldingsEntity> findByRegDtStartingWith(String regDt);
 }

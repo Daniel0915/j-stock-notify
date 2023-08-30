@@ -10,4 +10,6 @@ public interface ExecOwnershipRepository extends JpaRepository<ExecOwnershipEnti
 
     List<ExecOwnershipEntity> findAllByCorpCode(String corpCode);
 
+    List<ExecOwnershipEntity> findByRegDtStartingWith(String date);
+
 }

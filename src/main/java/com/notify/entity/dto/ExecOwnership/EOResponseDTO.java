@@ -23,6 +23,7 @@ public class EOResponseDTO {
         private String isu_exctv_rgist_at;
         private String isu_exctv_ofcps;
         private String isu_main_shrholdr;
+        private String sp_stock_lmp_cnt;
         private String sp_stock_lmp_irds_cnt;
         private String sp_stock_lmp_rate;
         private String sp_stock_lmp_irds_rate;
@@ -47,7 +48,7 @@ public class EOResponseDTO {
                     .isuExctvOfcps(listDTO.isu_exctv_ofcps)
                     .isuMainShrholdr(listDTO.isu_main_shrholdr)
                     .spStockLmpCnt(
-                            Long.parseLong(listDTO.sp_stock_lmp_irds_cnt.replaceAll(",", "")))
+                            Long.parseLong(listDTO.sp_stock_lmp_cnt.replaceAll(",", "")))
                     .spStockLmpIrdsCnt(
                             Long.parseLong(listDTO.sp_stock_lmp_irds_cnt.replaceAll(",", "")))
                     .spStockLmpRate(listDTO.sp_stock_lmp_rate)

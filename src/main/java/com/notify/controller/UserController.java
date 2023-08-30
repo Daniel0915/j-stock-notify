@@ -51,7 +51,7 @@ public class UserController {
 
     @GetMapping("/test1")
     public List<ExecOwnershipEntity> getTest1() {
-        return execOwnershipService.insertData();
+        return execOwnershipService.notifyInfo();
     }
 
 
