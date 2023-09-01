@@ -6,6 +6,7 @@ import com.notify.entity.UserInfo;
 import com.notify.repository.UserRepository;
 import com.notify.service.ExecOwnershipService;
 import com.notify.service.LargeHoldingsService;
+import com.notify.service.TelegramService;
 import com.notify.service.webclient.WebClientLargeHoldingServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class UserController {
     private UserRepository userRepository;
     private LargeHoldingsService largeHoldingsService;
     private ExecOwnershipService execOwnershipService;
+    private TelegramService telegramService;
 
     @GetMapping("/")
     public void getUsers() {
@@ -52,6 +54,11 @@ public class UserController {
     @GetMapping("/test1")
     public List<ExecOwnershipEntity> getTest1() {
         return execOwnershipService.notifyInfo();
+    }
+
+    @GetMapping("/test2")
+    public List<?> getTest2() {
+        return telegramService.chatInfoUpdate();
     }
 
 

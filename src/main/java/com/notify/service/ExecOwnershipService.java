@@ -1,7 +1,6 @@
 package com.notify.service;
 
 import com.notify.entity.ExecOwnershipEntity;
-import com.notify.entity.LargeHoldingsEntity;
 import com.notify.repository.ExecOwnershipRepository;
 import com.notify.service.webclient.WebClientService;
 import com.notify.util.Date;
